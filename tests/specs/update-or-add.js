@@ -3,27 +3,24 @@
 var test = require('tape')
 
 var dbFactory = require('../utils/db')
-var Store = require('../../')
 
-test('store.updateOrAdd exists', function (t) {
+test('db.$updateOrAdd exists', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  t.is(typeof store.updateOrAdd, 'function', 'has method')
+  t.is(typeof db.$updateOrAdd, 'function', 'has method')
 })
 
-test('store.updateOrAdd(id, object) updates existing', function (t) {
+test('db.$updateOrAdd(id, object) updates existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({id: 'exists', foo: 'bar'})
+  db.$add({id: 'exists', foo: 'bar'})
 
   .then(function () {
-    return store.updateOrAdd('exists', {foo: 'baz'})
+    return db.$updateOrAdd('exists', {foo: 'baz'})
   })
 
   .then(function (object) {
@@ -32,13 +29,12 @@ test('store.updateOrAdd(id, object) updates existing', function (t) {
   })
 })
 
-test('store.updateOrAdd(id, object) adds new if non-existent', function (t) {
+test('db.$updateOrAdd(id, object) adds new if non-existent', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.updateOrAdd('newid', {foo: 'baz'})
+  return db.$updateOrAdd('newid', {foo: 'baz'})
 
   .then(function (object) {
     t.is(object.id, 'newid', 'resolves with id')
@@ -46,29 +42,27 @@ test('store.updateOrAdd(id, object) adds new if non-existent', function (t) {
   })
 })
 
-test('store.updateOrAdd(id) fails with 400 error', function (t) {
+test('db.$updateOrAdd(id) fails with 400 error', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.updateOrAdd('id')
+  return db.$updateOrAdd('id')
 
   .catch(function (error) {
     t.is(error.status, 400, 'rejects with invalid request error')
   })
 })
 
-test('store.updateOrAdd(object) updates existing', function (t) {
+test('db.$updateOrAdd(object) updates existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({id: 'exists', foo: 'bar'})
+  db.$add({id: 'exists', foo: 'bar'})
 
   .then(function () {
-    return store.updateOrAdd({id: 'exists', foo: 'baz'})
+    return db.$updateOrAdd({id: 'exists', foo: 'baz'})
   })
 
   .then(function (object) {
@@ -77,13 +71,12 @@ test('store.updateOrAdd(object) updates existing', function (t) {
   })
 })
 
-test('store.updateOrAdd(object) adds new if non-existent', function (t) {
+test('db.$updateOrAdd(object) adds new if non-existent', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.updateOrAdd({id: 'newid', foo: 'baz'})
+  return db.$updateOrAdd({id: 'newid', foo: 'baz'})
 
   .then(function (object) {
     t.is(object.id, 'newid', 'resolves with id')
@@ -91,29 +84,27 @@ test('store.updateOrAdd(object) adds new if non-existent', function (t) {
   })
 })
 
-test('store.updateOrAdd(object) without object.id fails with 400 error', function (t) {
+test('db.$updateOrAdd(object) without object.id fails with 400 error', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.updateOrAdd({foo: 'bar'})
+  return db.$updateOrAdd({foo: 'bar'})
 
   .catch(function (error) {
     t.is(error.status, 400, 'rejects with invalid request error')
   })
 })
 
-test('hoodie.store.updateOrAdd(array) updates existing, adds new', function (t) {
+test('hoodie.db.$updateOrAdd(array) updates existing, adds new', function (t) {
   t.plan(5)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     {id: 'exists', foo: 'bar'}
   ]).then(function () {
-    return store.updateOrAdd([
+    return db.$updateOrAdd([
       {id: 'exists', foo: 'baz'},
       {id: 'unknown', foo: 'baz'}
     ])

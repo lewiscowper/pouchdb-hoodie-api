@@ -3,24 +3,21 @@
 var test = require('tape')
 
 var dbFactory = require('../utils/db')
-var Store = require('../../')
 
 test('has "updateAll" method', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  t.is(typeof store.updateAll, 'function', 'has method')
+  t.is(typeof db.$updateAll, 'function', 'has method')
 })
 
-test('store.updateAll(changedProperties)', function (t) {
+test('db.$updateAll(changedProperties)', function (t) {
   t.plan(10)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.add([{
+  return db.$add([{
     foo: 'foo',
     bar: 'foo'
   }, {
@@ -30,7 +27,7 @@ test('store.updateAll(changedProperties)', function (t) {
   }])
 
   .then(function () {
-    return store.updateAll({
+    return db.$updateAll({
       bar: 'bar'
     })
   })
@@ -45,7 +42,7 @@ test('store.updateAll(changedProperties)', function (t) {
     return null
   })
 
-  .then(store.findAll)
+  .then(db.$findAll.bind(db))
 
   .then(function (objects) {
     objects.forEach(function (object) {
@@ -55,13 +52,12 @@ test('store.updateAll(changedProperties)', function (t) {
   })
 })
 
-test('store.updateAll(updateFunction)', function (t) {
+test('db.$updateAll(updateFunction)', function (t) {
   t.plan(10)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.add([{
+  return db.$add([{
     foo: 'foo',
     bar: 'foo'
   }, {
@@ -71,7 +67,7 @@ test('store.updateAll(updateFunction)', function (t) {
   }])
 
   .then(function () {
-    return store.updateAll(function (object) {
+    return db.$updateAll(function (object) {
       object.bar = 'bar'
       return object
     })
@@ -87,7 +83,7 @@ test('store.updateAll(updateFunction)', function (t) {
     return null
   })
 
-  .then(store.findAll)
+  .then(db.$findAll.bind(db))
 
   .then(function (objects) {
     objects.forEach(function (object) {
@@ -97,26 +93,24 @@ test('store.updateAll(updateFunction)', function (t) {
   })
 })
 
-test('fails store.updateAll()', function (t) {
+test('fails db.$updateAll()', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.updateAll()
+  db.$updateAll()
 
   .catch(function (err) {
     t.ok(err instanceof Error, 'rejects error')
   })
 })
 
-test('store.updateAll(change) no objects', function (t) {
+test('db.$updateAll(change) no objects', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.updateAll({})
+  db.$updateAll({})
 
   .then(function (results) {
     t.same(results, [], 'reolves empty array')

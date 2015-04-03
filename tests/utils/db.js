@@ -3,6 +3,8 @@
 var PouchDB = process.browser ? global.PouchDB : require('pouchdb')
 var uuid = PouchDB.utils.uuid
 
+PouchDB.plugin(require('../../'))
+
 module.exports = function (name) {
   name = name || uuid(10)
 

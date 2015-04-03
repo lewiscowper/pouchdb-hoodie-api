@@ -3,27 +3,24 @@
 var test = require('tape')
 
 var dbFactory = require('../utils/db')
-var Store = require('../../')
 
-test('store.findOrAdd exists', function (t) {
+test('db.$findOrAdd exists', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  t.is(typeof store.findOrAdd, 'function', 'has method')
+  t.is(typeof db.$findOrAdd, 'function', 'has method')
 })
 
-test('hoodie.store.findOrAdd(id, object) finds existing', function (t) {
+test('hoodie.db.$findOrAdd(id, object) finds existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({id: 'exists', foo: 'bar'})
+  db.$add({id: 'exists', foo: 'bar'})
 
   .then(function () {
-    return store.findOrAdd('exists', {foo: 'baz'})
+    return db.$findOrAdd('exists', {foo: 'baz'})
   })
 
   .then(function (object) {
@@ -31,13 +28,12 @@ test('hoodie.store.findOrAdd(id, object) finds existing', function (t) {
     t.is(object.foo, 'bar', 'resolves with old object')
   })
 })
-test('hoodie.store.findOrAdd(id, object) adds new', function (t) {
+test('hoodie.db.$findOrAdd(id, object) adds new', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.findOrAdd('newid', {foo: 'baz'})
+  return db.$findOrAdd('newid', {foo: 'baz'})
 
   .then(function (object) {
     t.is(object.id, 'newid', 'resolves with id')
@@ -45,28 +41,27 @@ test('hoodie.store.findOrAdd(id, object) adds new', function (t) {
   })
 })
 
-test('hoodie.store.findOrAdd(id) fails if no object exists', function (t) {
+test('hoodie.db.$findOrAdd(id) fails if no object exists', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.findOrAdd('thing')
+  db.$findOrAdd('thing')
+
   .catch(function (error) {
     t.is(error.status, 412, 'rejects with 412 error')
   })
 })
 
-test('hoodie.store.findOrAdd(object) finds existing', function (t) {
+test('hoodie.db.$findOrAdd(object) finds existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({id: 'exists', foo: 'bar'})
+  db.$add({id: 'exists', foo: 'bar'})
 
   .then(function (object) {
-    return store.findOrAdd({id: 'exists', foo: 'baz'})
+    return db.$findOrAdd({id: 'exists', foo: 'baz'})
   })
 
   .then(function (object) {
@@ -75,13 +70,12 @@ test('hoodie.store.findOrAdd(object) finds existing', function (t) {
   })
 })
 
-test('hoodie.store.findOrAdd(object) adds new', function (t) {
+test('hoodie.db.$findOrAdd(object) adds new', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.findOrAdd({id: 'newid', foo: 'baz'})
+  return db.$findOrAdd({id: 'newid', foo: 'baz'})
 
   .then(function (object) {
     t.is(object.id, 'newid', 'resolves with id')
@@ -89,29 +83,27 @@ test('hoodie.store.findOrAdd(object) adds new', function (t) {
   })
 })
 
-test('hoodie.store.findOrAdd(object) fails if object has no id', function (t) {
+test('hoodie.db.$findOrAdd(object) fails if object has no id', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.findOrAdd({foo: 'bar'})
+  return db.$findOrAdd({foo: 'bar'})
 
   .catch(function (error) {
     t.is(error.status, 412)
   })
 })
 
-test('hoodie.store.findOrAdd([object1, object2])', function (t) {
+test('hoodie.db.$findOrAdd([object1, object2])', function (t) {
   t.plan(4)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     {id: 'exists'}
   ]).then(function () {
-    return store.findOrAdd([
+    return db.$findOrAdd([
       {id: 'exists', foo: 'bar'},
       {id: 'unknown', foo: 'baz'}
     ])

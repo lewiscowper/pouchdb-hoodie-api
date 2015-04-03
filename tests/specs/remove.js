@@ -3,35 +3,31 @@
 var test = require('tape')
 
 var dbFactory = require('../utils/db')
-var Store = require('../../')
 
 test('has "remove" method', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
-
-  t.is(typeof store.remove, 'function', 'has method')
+  t.is(typeof db.$remove, 'function', 'has method')
 })
 
 test('removes existing by id', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({
+  db.$add({
     id: 'foo'
   })
 
   .then(function () {
-    return store.remove('foo')
+    return db.$remove('foo')
   })
 
   .then(function (object) {
     t.is(object.id, 'foo', 'resolves value')
 
-    return store.find('foo')
+    return db.$find('foo')
   })
 
   .catch(function (err) {
@@ -43,22 +39,21 @@ test('removes existing by object', function (t) {
   t.plan(3)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({
+  db.$add({
     id: 'foo',
     foo: 'bar'
   })
 
   .then(function () {
-    return store.remove({id: 'foo'})
+    return db.$remove({id: 'foo'})
   })
 
   .then(function (object) {
     t.is(object.id, 'foo', 'resolves value')
     t.is(object.foo, 'bar', 'resolves value')
 
-    return store.find('foo')
+    return db.$find('foo')
   })
 
   .catch(function (error) {
@@ -70,34 +65,32 @@ test('fails for non-existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.remove('foo')
+  db.$remove('foo')
 
   .catch(function (err) {
     t.ok(err instanceof Error, 'rejects error')
   })
 
-  store.remove({id: 'foo'})
+  db.$remove({id: 'foo'})
 
   .catch(function (err) {
     t.ok(err instanceof Error, 'rejects error')
   })
 })
 
-test('store.remove(array) removes existing, returns error for non-existing', function (t) {
+test('db.$remove(array) removes existing, returns error for non-existing', function (t) {
   t.plan(7)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: 'exists1', foo: 'bar' },
     { id: 'exists2', foo: 'baz' }
   ])
 
   .then(function () {
-    return store.remove([
+    return db.$remove([
       'exists1',
       { id: 'exists2' },
       'unknown'

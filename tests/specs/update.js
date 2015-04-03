@@ -3,30 +3,27 @@
 var test = require('tape')
 
 var dbFactory = require('../utils/db')
-var Store = require('../../')
 
-test('store.update() exists', function (t) {
+test('db.$update() exists', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  t.is(typeof store.update, 'function', 'has method')
+  t.is(typeof db.$update, 'function', 'has method')
 })
 
-test('store.update(id, changedProperties)', function (t) {
+test('db.$update(id, changedProperties)', function (t) {
   t.plan(3)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({
+  db.$add({
     id: 'exists',
     foo: 'bar'
   })
 
   .then(function () {
-    return store.update('exists', {
+    return db.$update('exists', {
       foo: 'baz'
     })
   })
@@ -38,42 +35,39 @@ test('store.update(id, changedProperties)', function (t) {
   })
 })
 
-test('store.update(id)', function (t) {
+test('db.$update(id)', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.update('nothinghere')
+  db.$update('nothinghere')
 
   .catch(function (error) {
     t.ok(error instanceof Error, 'rejects error')
   })
 })
 
-test('store.update("unknown", changedProperties)', function (t) {
+test('db.$update("unknown", changedProperties)', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.update('unknown', {foo: 'bar'})
+  db.$update('unknown', {foo: 'bar'})
 
   .catch(function (error) {
     t.ok(error instanceof Error, 'rejects error')
   })
 })
 
-test('store.update(id, updateFunction)', function (t) {
+test('db.$update(id, updateFunction)', function (t) {
   t.plan(3)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({ id: 'exists' })
+  db.$add({ id: 'exists' })
 
   .then(function () {
-    return store.update('exists', function (object) {
+    return db.$update('exists', function (object) {
       object.foo = object.id + 'bar'
     })
   })
@@ -85,16 +79,15 @@ test('store.update(id, updateFunction)', function (t) {
   })
 })
 
-test('store.update(object)', function (t) {
+test('db.$update(object)', function (t) {
   t.plan(3)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({ id: 'exists' })
+  db.$add({ id: 'exists' })
 
   .then(function () {
-    return store.update({
+    return db.$update({
       id: 'exists',
       foo: 'bar'
     })
@@ -107,19 +100,18 @@ test('store.update(object)', function (t) {
   })
 })
 
-test('store.update(array)', function (t) {
+test('db.$update(array)', function (t) {
   t.plan(6)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: '1', foo: 'foo', bar: 'foo'},
     { id: '2', foo: 'bar'}
   ])
 
   .then(function () {
-    return store.update([
+    return db.$update([
       { id: '1', bar: 'baz'},
       { id: '2', bar: 'baz'}
     ])
@@ -137,16 +129,15 @@ test('store.update(array)', function (t) {
 })
 
 // blocked by https://github.com/boennemann/pouchdb-hoodie-api/issues/8
-test('store.update(array) with non-existent object', function (t) {
+test('db.$update(array) with non-existent object', function (t) {
   t.plan(4)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({ id: 'exists'})
+  db.$add({ id: 'exists'})
 
   .then(function () {
-    return store.update([
+    return db.$update([
       { id: 'exists', foo: 'bar'},
       { id: 'unknown', foo: 'baz'}
     ])
@@ -162,19 +153,18 @@ test('store.update(array) with non-existent object', function (t) {
 })
 
 // https://github.com/boennemann/pouchdb-hoodie-api/issues/9
-test('store.update(array) with invalid objects', function (t) {
+test('db.$update(array) with invalid objects', function (t) {
   t.plan(5)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: 'exists' },
     { id: 'foo' }
   ])
 
   .then(function () {
-    return store.update([
+    return db.$update([
       { id: 'exists', foo: 'bar'},
       'foo',
       []
@@ -191,19 +181,18 @@ test('store.update(array) with invalid objects', function (t) {
   })
 })
 
-test('store.update(array, changedProperties)', function (t) {
+test('db.$update(array, changedProperties)', function (t) {
   t.plan(7)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: '1', foo: 'foo', bar: 'foo'},
     { id: '2', foo: 'bar'}
   ])
 
   .then(function () {
-    return store.update([{id: '1'}, '2'], {
+    return db.$update([{id: '1'}, '2'], {
       bar: 'baz'
     })
   })
@@ -221,18 +210,17 @@ test('store.update(array, changedProperties)', function (t) {
 })
 
 // https://github.com/boennemann/pouchdb-hoodie-api/issues/9
-test('store.update(array, changedProperties) with non-existent objects', function (t) {
+test('db.$update(array, changedProperties) with non-existent objects', function (t) {
   t.plan(5)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: 'exists' }
   ])
 
   .then(function () {
-    return store.update([
+    return db.$update([
       'exists',
       'unknown'
     ], {foo: 'bar'})
@@ -248,19 +236,18 @@ test('store.update(array, changedProperties) with non-existent objects', functio
   })
 })
 
-test('store.update(array, updateFunction)', function (t) {
+test('db.$update(array, updateFunction)', function (t) {
   t.plan(6)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: '1', foo: 'foo', bar: 'foo'},
     { id: '2', foo: 'bar'}
   ])
 
   .then(function () {
-    return store.update(['1', '2'], function (object) {
+    return db.$update(['1', '2'], function (object) {
       object.bar = object.id + 'baz'
     })
   })

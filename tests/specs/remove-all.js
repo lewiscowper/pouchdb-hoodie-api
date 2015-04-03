@@ -3,24 +3,20 @@
 var test = require('tape')
 
 var dbFactory = require('../utils/db')
-var Store = require('../../')
 
-test('store.removeAll exists', function (t) {
+test('db.$removeAll exists', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
-
-  t.is(typeof store.removeAll, 'function', 'has method')
+  t.is(typeof db.$removeAll, 'function', 'has method')
 })
 
-test('store.removeAll()', function (t) {
+test('db.$removeAll()', function (t) {
   t.plan(4)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  return store.add([{
+  return db.$add([{
     foo: 'foo',
     bar: 'foo'
   }, {
@@ -30,7 +26,7 @@ test('store.removeAll()', function (t) {
   }])
 
   .then(function () {
-    return store.removeAll()
+    return db.$removeAll()
   })
 
   .then(function (objects) {
@@ -42,7 +38,7 @@ test('store.removeAll()', function (t) {
   })
 
   .then(function () {
-    return store.findAll()
+    return db.$findAll()
   })
 
   .then(function (objects) {
@@ -50,13 +46,12 @@ test('store.removeAll()', function (t) {
   })
 })
 
-test('store.removeAll(filterFunction)', function (t) {
+test('db.$removeAll(filterFunction)', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([{
+  db.$add([{
     foo: 0
   }, {
     foo: 'foo'
@@ -73,7 +68,7 @@ test('store.removeAll(filterFunction)', function (t) {
   }])
 
   .then(function () {
-    return store.removeAll(function (object) {
+    return db.$removeAll(function (object) {
       return typeof object.foo === 'number'
     })
   })
@@ -83,7 +78,7 @@ test('store.removeAll(filterFunction)', function (t) {
   })
 
   .then(function (objects) {
-    return store.findAll()
+    return db.$findAll()
   })
 
   .then(function (objects) {

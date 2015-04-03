@@ -3,29 +3,25 @@
 var test = require('tape')
 
 var dbFactory = require('../utils/db')
-var Store = require('../../')
 
-test('store.find exists', function (t) {
+test('db.$find exists', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
-
-  t.is(typeof store.find, 'function', 'has method')
+  t.is(typeof db.$find, 'function', 'has method')
 })
 
-test('store.find(id)', function (t) {
+test('db.$find(id)', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({
+  db.$add({
     id: 'foo'
   })
 
   .then(function () {
-    return store.find('foo')
+    return db.$find('foo')
   })
 
   .then(function (object) {
@@ -33,18 +29,17 @@ test('store.find(id)', function (t) {
   })
 })
 
-test('store.find(object)', function (t) {
+test('db.$find(object)', function (t) {
   t.plan(1)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({
+  db.$add({
     id: 'foo'
   })
 
   .then(function () {
-    return store.find({id: 'foo'})
+    return db.$find({id: 'foo'})
   })
 
   .then(function (object) {
@@ -52,18 +47,17 @@ test('store.find(object)', function (t) {
   })
 })
 
-test('store.find fails for non-existing', function (t) {
+test('db.$find fails for non-existing', function (t) {
   t.plan(4)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add({
+  db.$add({
     id: 'unrelated'
   })
 
   .then(function () {
-    return store.find('foo')
+    return db.$find('foo')
   })
 
   .catch(function (err) {
@@ -71,7 +65,7 @@ test('store.find fails for non-existing', function (t) {
     t.is(err.status, 404)
   })
 
-  store.find({id: 'foo'})
+  db.$find({id: 'foo'})
 
   .catch(function (err) {
     t.ok(err instanceof Error, 'rejects error')
@@ -79,19 +73,18 @@ test('store.find fails for non-existing', function (t) {
   })
 })
 
-test('store.find(array)', function (t) {
+test('db.$find(array)', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: 'foo' },
     { id: 'bar' }
   ])
 
   .then(function () {
-    return store.find(['foo', {id: 'bar'}])
+    return db.$find(['foo', {id: 'bar'}])
   })
 
   .then(function (objects) {
@@ -100,18 +93,17 @@ test('store.find(array)', function (t) {
   })
 })
 
-test('store.find(array) with non-existing', function (t) {
+test('db.$find(array) with non-existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
-  var store = new Store(db)
 
-  store.add([
+  db.$add([
     { id: 'exists' }
   ])
 
   .then(function () {
-    return store.find(['exists', 'unknown'])
+    return db.$find(['exists', 'unknown'])
   })
 
   .then(function (objects) {
