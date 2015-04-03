@@ -12,7 +12,7 @@ test('db.$findOrAdd exists', function (t) {
   t.is(typeof db.$findOrAdd, 'function', 'has method')
 })
 
-test('hoodie.db.$findOrAdd(id, object) finds existing', function (t) {
+test('db.$findOrAdd(id, object) finds existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
@@ -28,7 +28,8 @@ test('hoodie.db.$findOrAdd(id, object) finds existing', function (t) {
     t.is(object.foo, 'bar', 'resolves with old object')
   })
 })
-test('hoodie.db.$findOrAdd(id, object) adds new', function (t) {
+
+test('db.$findOrAdd(id, object) adds new', function (t) {
   t.plan(2)
 
   var db = dbFactory()
@@ -41,7 +42,7 @@ test('hoodie.db.$findOrAdd(id, object) adds new', function (t) {
   })
 })
 
-test('hoodie.db.$findOrAdd(id) fails if no object exists', function (t) {
+test('db.$findOrAdd(id) fails if no object exists', function (t) {
   t.plan(1)
 
   var db = dbFactory()
@@ -53,7 +54,7 @@ test('hoodie.db.$findOrAdd(id) fails if no object exists', function (t) {
   })
 })
 
-test('hoodie.db.$findOrAdd(object) finds existing', function (t) {
+test('db.$findOrAdd(object) finds existing', function (t) {
   t.plan(2)
 
   var db = dbFactory()
@@ -70,7 +71,7 @@ test('hoodie.db.$findOrAdd(object) finds existing', function (t) {
   })
 })
 
-test('hoodie.db.$findOrAdd(object) adds new', function (t) {
+test('db.$findOrAdd(object) adds new', function (t) {
   t.plan(2)
 
   var db = dbFactory()
@@ -83,7 +84,7 @@ test('hoodie.db.$findOrAdd(object) adds new', function (t) {
   })
 })
 
-test('hoodie.db.$findOrAdd(object) fails if object has no id', function (t) {
+test('db.$findOrAdd(object) fails if object has no id', function (t) {
   t.plan(1)
 
   var db = dbFactory()
@@ -95,7 +96,7 @@ test('hoodie.db.$findOrAdd(object) fails if object has no id', function (t) {
   })
 })
 
-test('hoodie.db.$findOrAdd([object1, object2])', function (t) {
+test('db.$findOrAdd([object1, object2])', function (t) {
   t.plan(4)
 
   var db = dbFactory()

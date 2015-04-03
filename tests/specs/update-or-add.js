@@ -96,14 +96,16 @@ test('db.$updateOrAdd(object) without object.id fails with 400 error', function 
   })
 })
 
-test('hoodie.db.$updateOrAdd(array) updates existing, adds new', function (t) {
+test('db.$updateOrAdd(array) updates existing, adds new', function (t) {
   t.plan(5)
 
   var db = dbFactory()
 
   db.$add([
     {id: 'exists', foo: 'bar'}
-  ]).then(function () {
+  ])
+
+  .then(function () {
     return db.$updateOrAdd([
       {id: 'exists', foo: 'baz'},
       {id: 'unknown', foo: 'baz'}
